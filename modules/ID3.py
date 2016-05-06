@@ -30,11 +30,11 @@ def check_homogenous(data_set):
     Output: Return either the homogenous attribute or None
     ========================================================================================================
      '''
-     test = data_set[0][0]
-     for data in data_set:
-        if(data != test):
+    test = data_set[0][0]
+    for data in data_set:
+        if(data[0] != test):
             return None
-     return test
+    return test
 # ======== Test Cases =============================
 # data_set = [[0],[1],[1],[1],[1],[1]]
 # check_homogenous(data_set) ==  None
@@ -89,7 +89,6 @@ def mode(data_set):
             dictionary[data[0]] += 1
         else:
             dictionary[data[0]] = 1
-
     return max(dictionary.iteritems(), key=operator.itemgetter(1))[0]
         
            
@@ -109,6 +108,7 @@ def entropy(data_set):
     Output: Returns entropy. See Textbook for formula
     ========================================================================================================
     '''
+
 
 
 # ======== Test case =============================
@@ -177,7 +177,7 @@ def split_on_nominal(data_set, attribute):
     '''
     dictionary = defaultdict(list)
     for data in data_set:
-        dictionary[data[0]].append(data)
+        dictionary[data[attribute]].append(data)
     return dictionary
 # ======== Test case =============================
 # data_set, attr = [[0, 4], [1, 3], [1, 2], [0, 0], [0, 0], [0, 4], [1, 4], [0, 2], [1, 2], [0, 1]], 1
@@ -199,7 +199,7 @@ def split_on_numerical(data_set, attribute, splitting_value):
     less = []
     other = []
     for data in data_set:
-        if(data[0] <splitting_value):
+        if(data[attribute] <splitting_value):
             less.append(data)
         else:
             other.append(data)
