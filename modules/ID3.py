@@ -61,7 +61,7 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     max_index = 0
     splitting_value = 0
     #check all attributes
-    for index in range(len(attribute_metadata)):
+    for index in range(1,len(attribute_metadata)):
         #if attribute is nominal use nominal gain calculation
         if attribute_metadata[index]['is_nominal']:
             #if higher than max gain then this is our best attribute and should be our new max gain,index and splitting value is false
@@ -92,10 +92,7 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
 # data_set = [[0, 0], [1, 0], [0, 2], [0, 2], [0, 3], [1, 1], [0, 4], [0, 2], [1, 2], [1, 5]]
 # pick_best_attribute(data_set, attribute_metadata, numerical_splits_count) == (1, False)
 
-##failing on
 
-# returns (2,0.2)
-# should be (1,False)
 # Uses gain_ratio_nominal or gain_ratio_numeric to calculate gain ratio.
 
 def mode(data_set):
@@ -289,9 +286,20 @@ def split_on_numerical(data_set, attribute, splitting_value):
 # d_set,a,sval = [[0, 0.91], [0, 0.84], [1, 0.82], [1, 0.07], [0, 0.82],[0, 0.59], [0, 0.87], [0, 0.17], [1, 0.05], [1, 0.76]],1,0.17
 # split_on_numerical(d_set,a,sval) == ([[1, 0.07], [1, 0.05]],[[0, 0.91],[0, 0.84], [1, 0.82], [0, 0.82], [0, 0.59], [0, 0.87], [0, 0.17], [1, 0.76]])
 
+##failing on
 
 attribute_metadata = [{'name': "winner",'is_nominal': True},{'name': "weather",'is_nominal': True}, {'name': "attitude", 'is_nominal': False}] 
 data_set = [[0, 0, 0.1], [1, 0, 0.2], [0, 2, 0.2], [0, 2, 0.2], [0, 3, 0.1], [1, 1, 0.1], [0, 4, 0.1], [0, 2, 0.1], [1, 2, 0.1], [1, 5, 0.1]]
+print 'pick_best_attribute'
+print pick_best_attribute(data_set,attribute_metadata,[20,20,20,20])
+print 'gain ratios nominal'
+print 'index 0:'
 print gain_ratio_nominal(data_set,0)
+print 'index 1:'
 print gain_ratio_nominal(data_set,1)
+print 'gain_ratios numeric'
+print 'index:2'
 print gain_ratio_numeric(data_set,2,1)
+
+# returns (2,0.2)
+# should be (1,False)
