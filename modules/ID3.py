@@ -56,28 +56,32 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     Output: best attribute, split value if numeric
     ========================================================================================================
     '''
-    steps = 1
-    best_attribute =""
+    steps = 1 #pdf says to default to 1 for test cases
     max_gain = 0
     max_index = 0
     splitting_value = 0
+    #check all attributes
     for index in range(len(attribute_metadata)):
+        #if attribute is nominal use nominal gain calculation
         if attribute_metadata[index]['is_nominal']:
+            #if higher than max gain then this is our best attribute and should be our new max gain,index and splitting value is false
             if(max_gain< gain_ratio_nominal(data_set,index)):
                 max_gain = gain_ratio_nominal(data_set,index)
                 max_index = index
                 splitting_value = False
-        else:
+
+        else: #if nominal and numerical splits > 0, use nominal gain calculation
             if(numerical_splits_count[index]>0): 
                 if(max_gain< gain_ratio_numeric(data_set,index,steps)):
+                    #if higher than max gain then this is our best attribute and should be our new max gain,index and splitting value
                     max_gain,splitting_value = gain_ratio_numeric(data_set,index,steps)
                     max_index = index
 
     
-    if(max_gain==0):
+    if(max_gain==0): #if max gain is 0 then all attributes gain was 0, return false, false 
          index = False
          splitting_value = False
-    print index,splitting_value
+
     return (index,splitting_value)
 # # ======== Test Cases =============================
 # numerical_splits_count = [20,20]
@@ -88,6 +92,10 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
 # data_set = [[0, 0], [1, 0], [0, 2], [0, 2], [0, 3], [1, 1], [0, 4], [0, 2], [1, 2], [1, 5]]
 # pick_best_attribute(data_set, attribute_metadata, numerical_splits_count) == (1, False)
 
+##failing on
+
+# returns (2,0.2)
+# should be (1,False)
 # Uses gain_ratio_nominal or gain_ratio_numeric to calculate gain ratio.
 
 def mode(data_set):
@@ -204,25 +212,28 @@ def gain_ratio_numeric(data_set, attribute, steps):
     thresholds = {}
     intrinsic = 0
     attribute_values = []
+    max_gain_ratio = 0
+    max_splitting_val = 0
 
     for index in range(len(data_set)):
         if(index%steps == 0):
             #split using this value
             sublists = split_on_numerical(data_set,attribute,data_set[index][attribute])
 
+            #make sure that lists are of size greater than 0 to avoid entropy function crashing
             if(len(sublists[0]) > 0 and len(sublists[1])>0):    
                 intrinsic = 0
                 gain = float(entropy(data_set))
-                #calculate gain ratio using this value
+                #calculate gain ratio using sublists from splitting on this value
                 for sublist in sublists:
                     gain -= float(len(sublist))/len(data_set) * float(entropy(sublist))
                     temp = float(abs(len(sublist)))/abs(len(data_set))
                     intrinsic += temp * math.log(temp,2)
                 #store this possible threshold value and its gain ratio
-                thresholds[data_set[index][attribute]]= abs(float(gain)/intrinsic)
+                thresholds[data_set[index][attribute]]=abs(float(gain)/intrinsic)
+              
 
-
-    #get the gain ratio and return it and its associated threshold
+    #get the max gain ratio and return it and its associated threshold
     threshold,gain_ratio = max(thresholds.iteritems(), key=operator.itemgetter(1))
     return gain_ratio,threshold
 # ======== Test case =============================
@@ -277,3 +288,10 @@ def split_on_numerical(data_set, attribute, splitting_value):
 # split_on_numerical(d_set,a,sval) == ([[1, 0.25], [1, 0.19], [1, 0.34], [1, 0.19]],[[1, 0.89], [0, 0.93], [0, 0.48], [1, 0.49], [0, 0.6], [0, 0.6]])
 # d_set,a,sval = [[0, 0.91], [0, 0.84], [1, 0.82], [1, 0.07], [0, 0.82],[0, 0.59], [0, 0.87], [0, 0.17], [1, 0.05], [1, 0.76]],1,0.17
 # split_on_numerical(d_set,a,sval) == ([[1, 0.07], [1, 0.05]],[[0, 0.91],[0, 0.84], [1, 0.82], [0, 0.82], [0, 0.59], [0, 0.87], [0, 0.17], [1, 0.76]])
+
+
+attribute_metadata = [{'name': "winner",'is_nominal': True},{'name': "weather",'is_nominal': True}, {'name': "attitude", 'is_nominal': False}] 
+data_set = [[0, 0, 0.1], [1, 0, 0.2], [0, 2, 0.2], [0, 2, 0.2], [0, 3, 0.1], [1, 1, 0.1], [0, 4, 0.1], [0, 2, 0.1], [1, 2, 0.1], [1, 5, 0.1]]
+print gain_ratio_nominal(data_set,0)
+print gain_ratio_nominal(data_set,1)
+print gain_ratio_numeric(data_set,2,1)
