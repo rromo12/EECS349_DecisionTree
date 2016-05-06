@@ -108,7 +108,21 @@ def entropy(data_set):
     Output: Returns entropy. See Textbook for formula
     ========================================================================================================
     '''
-
+    inx = data_set[0]
+    ttl = len(data_set)
+    
+    def log2(x):
+        if x == 0.0:
+            return 0.0
+        else:
+            return math.log(x,2)
+            
+    positive = float(data_set.count(inx))
+    negative = ttl - positive
+    pospro = positive/ttl
+    negpro = negative/ttl
+    entropy = -((pospro * (log2(pospro))) + ((negpro) * (log2(negpro))))
+    return abs(entropy)
 
 
 # ======== Test case =============================
