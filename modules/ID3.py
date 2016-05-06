@@ -108,7 +108,7 @@ def entropy(data_set):
     Output: Returns entropy. See Textbook for formula
     ========================================================================================================
     '''
-    inx = data_set[0]
+    positive = 0
     ttl = len(data_set)
     
     def log2(x):
@@ -116,8 +116,10 @@ def entropy(data_set):
             return 0.0
         else:
             return math.log(x,2)
-            
-    positive = float(data_set.count(inx))
+    for data in data_set:
+        if(data[0] == 1):
+            positive +=1
+    positive = float(positive)
     negative = ttl - positive
     pospro = positive/ttl
     negpro = negative/ttl
@@ -144,8 +146,20 @@ def gain_ratio_nominal(data_set, attribute):
     Output: Returns gain_ratio. See https://en.wikipedia.org/wiki/Information_gain_ratio
     ========================================================================================================
     '''
-    # Your code here
-    pass
+    gain = entropy(data_set)
+    attribute_values = []
+    subsets = split_on_nominal(data_set,attribute)
+    attribute_values = []
+    for data in data_set:
+        attribute_values.append(data[attribute])
+    attribute_values = set(attribute_values)
+    print attribute_values
+    for value in attribute_values:
+        sub = subsets[value]
+        gain -= (len(sub)/len(data_set)) * entropy(sub)
+    print gain
+    return gain
+
 # ======== Test case =============================
 # data_set, attr = [[1, 2], [1, 0], [1, 0], [0, 2], [0, 2], [0, 0], [1, 3], [0, 4], [0, 3], [1, 1]], 1
 # gain_ratio_nominal(data_set,attr) == 0.11470666361703151
