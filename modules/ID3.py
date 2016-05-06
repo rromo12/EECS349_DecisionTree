@@ -56,9 +56,29 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     Output: best attribute, split value if numeric
     ========================================================================================================
     '''
-    # Your code here
-    pass
+    steps = 1
+    best_attribute =""
+    max_gain = 0
+    max_index = 0
+    splitting_value = 0
+    for index in range(len(attribute_metadata)):
+        if attribute_metadata[index]['is_nominal']:
+            if(max_gain< gain_ratio_nominal(data_set,index)):
+                max_gain = gain_ratio_nominal(data_set,index)
+                max_index = index
+                splitting_value = False
+        else:
+            if(numerical_splits_count[index]>0): 
+                if(max_gain< gain_ratio_numeric(data_set,index,steps)):
+                    max_gain,splitting_value = gain_ratio_numeric(data_set,index,steps)
+                    max_index = index
 
+    
+    if(max_gain==0):
+         index = False
+         splitting_value = False
+    print index,splitting_value
+    return (index,splitting_value)
 # # ======== Test Cases =============================
 # numerical_splits_count = [20,20]
 # attribute_metadata = [{'name': "winner",'is_nominal': True},{'name': "opprundifferential",'is_nominal': False}]
