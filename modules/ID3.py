@@ -187,15 +187,22 @@ def gain_ratio_numeric(data_set, attribute, steps):
 
     for index in range(len(data_set)):
         if(index%steps == 0):
+            #split using this value
             sublists = split_on_numerical(data_set,attribute,data_set[index][attribute])
-            if(len(sublists[0]) > 0 and len(sublists[1])>0):
+
+            if(len(sublists[0]) > 0 and len(sublists[1])>0):    
                 intrinsic = 0
                 gain = float(entropy(data_set))
+                #calculate gain ratio using this value
                 for sublist in sublists:
-                  gain -= float(len(sublist))/len(data_set) * float(entropy(sublist))
-                  temp = float(abs(len(sublist)))/abs(len(data_set))
-                  intrinsic += temp * math.log(temp,2)
+                    gain -= float(len(sublist))/len(data_set) * float(entropy(sublist))
+                    temp = float(abs(len(sublist)))/abs(len(data_set))
+                    intrinsic += temp * math.log(temp,2)
+                #store this possible threshold value and its gain ratio
                 thresholds[data_set[index][attribute]]= abs(float(gain)/intrinsic)
+
+
+    #get the gain ratio and return it and its associated threshold
     threshold,gain_ratio = max(thresholds.iteritems(), key=operator.itemgetter(1))
     return gain_ratio,threshold
 # ======== Test case =============================
