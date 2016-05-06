@@ -146,19 +146,18 @@ def gain_ratio_nominal(data_set, attribute):
     Output: Returns gain_ratio. See https://en.wikipedia.org/wiki/Information_gain_ratio
     ========================================================================================================
     '''
-    gain = entropy(data_set)
+    intrinsic = 0
+    gain = float(entropy(data_set))
     attribute_values = []
     subsets = split_on_nominal(data_set,attribute)
-    attribute_values = []
-    for data in data_set:
-        attribute_values.append(data[attribute])
-    attribute_values = set(attribute_values)
-    print attribute_values
-    for value in attribute_values:
+    for value in subsets.keys():
         sub = subsets[value]
-        gain -= (len(sub)/len(data_set)) * entropy(sub)
-    print gain
-    return gain
+        gain -= float(len(sub))/len(data_set) * float(entropy(sub))
+
+        test = float(abs(len(sub)))/abs(len(data_set))
+
+        intrinsic += test * math.log(test,2)
+    return abs(float(gain)/intrinsic)
 
 # ======== Test case =============================
 # data_set, attr = [[1, 2], [1, 0], [1, 0], [0, 2], [0, 2], [0, 0], [1, 3], [0, 4], [0, 3], [1, 1]], 1
