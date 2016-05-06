@@ -153,10 +153,8 @@ def gain_ratio_nominal(data_set, attribute):
     for value in subsets.keys():
         sub = subsets[value]
         gain -= float(len(sub))/len(data_set) * float(entropy(sub))
-
-        test = float(abs(len(sub)))/abs(len(data_set))
-
-        intrinsic += test * math.log(test,2)
+        temp = float(abs(len(sub)))/abs(len(data_set))
+        intrinsic += temp * math.log(temp,2)
     return abs(float(gain)/intrinsic)
 
 # ======== Test case =============================
@@ -183,7 +181,23 @@ def gain_ratio_numeric(data_set, attribute, steps):
     ========================================================================================================
     '''
     # Your code here
-    pass
+    thresholds = {}
+    intrinsic = 0
+    attribute_values = []
+
+    for index in range(len(data_set)):
+        if(index%steps == 0):
+            sublists = split_on_numerical(data_set,attribute,data_set[index][attribute])
+            if(len(sublists[0]) > 0 and len(sublists[1])>0):
+                intrinsic = 0
+                gain = float(entropy(data_set))
+                for sublist in sublists:
+                  gain -= float(len(sublist))/len(data_set) * float(entropy(sublist))
+                  temp = float(abs(len(sublist)))/abs(len(data_set))
+                  intrinsic += temp * math.log(temp,2)
+                thresholds[data_set[index][attribute]]= abs(float(gain)/intrinsic)
+    threshold,gain_ratio = max(thresholds.iteritems(), key=operator.itemgetter(1))
+    return gain_ratio,threshold
 # ======== Test case =============================
 # data_set,attr,step = [[0,0.05], [1,0.17], [1,0.64], [0,0.38], [0,0.19], [1,0.68], [1,0.69], [1,0.17], [1,0.4], [0,0.53]], 1, 2
 # gain_ratio_numeric(data_set,attr,step) == (0.31918053332474033, 0.64)
