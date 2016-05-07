@@ -1,6 +1,8 @@
 import os.path
+import csv
 from operator import xor
 from parse import *
+import csv
 
 # DOCUMENTATION
 # ========================================
@@ -15,3 +17,13 @@ def create_predictions(tree, predict):
     Given a tree and a url to a data_set. Create a csv with a prediction for each result
     using the classify method in node class.
     '''
+    with open(predict, 'rb') as f:
+        reader = csv.reader(f)
+        predict = list(reader)
+    # download data set
+    results = []
+    for instance in predict:
+        results.append(tree.classify(instance))
+    with open('results.csv', 'wb') as resultsfile:
+        wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
+        wr.writerow(results)

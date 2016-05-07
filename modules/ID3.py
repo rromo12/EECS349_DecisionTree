@@ -59,7 +59,7 @@ def attribute_average(data_set,attribute):
 
 def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     '''
-    Actually calls the function to generate ID3 tree
+    Actually calls the ID3 Helper function to generate ID3 tree
     had to make it this way to avoid the recursive calls trying to fix missing attributes
     '''
     data_set= fix_missing_attributes(data_set,attribute_metadata)
@@ -98,7 +98,7 @@ def ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth):
         leaf.label = None
         leaf.decision_attribute = best_attribute
         leaf.name = attribute_metadata[best_attribute]['name']
-        attribute_metadata.pop(best_attribute)      #remove best attribute from list of attributes
+        # attribute_metadata.pop(best_attribute)      #remove best attribute from list of attributes
         numerical_splits_count[best_attribute] -= 1 #lower numerical splits of this attribute by 1 
 
         #case of zero information gain on all possible splitting attributes
@@ -292,6 +292,8 @@ def gain_ratio_nominal(data_set, attribute):
         gain -= float(len(sub))/len(data_set) * float(entropy(sub))
         temp = float(abs(len(sub)))/abs(len(data_set))
         intrinsic += temp * math.log(temp,2)
+    if intrinsic == 0:
+        intrinsic = 0.0000001
     return abs(float(gain)/intrinsic)
 
 # ======== Test case =============================
@@ -321,7 +323,8 @@ def gain_ratio_numeric(data_set, attribute, steps):
     thresholds = {}
     intrinsic = 0
     attribute_values = []
-    max_gain_ratio = 0
+    gain_ratio = 0
+    threshold = 0
     max_splitting_val = 0
 
     for index in range(len(data_set)):
@@ -339,11 +342,18 @@ def gain_ratio_numeric(data_set, attribute, steps):
                     temp = float(abs(len(sublist)))/abs(len(data_set))
                     intrinsic += temp * math.log(temp,2)
                 #store this possible threshold value and its gain ratio
+                if intrinsic == 0:
+                    intrinsic = 0.0000001
                 thresholds[data_set[index][attribute]]=abs(float(gain)/intrinsic)
               
 
-    #get the max gain ratio and return it and its associated threshold
-    threshold,gain_ratio = max(thresholds.iteritems(), key=operator.itemgetter(1))
+    # #get the max gain ratio and return it and its associated threshold
+    #     for threshold, gain_ratio in thresholds.iteritems():
+    #         if(gain_ratio > max_gain_ratio):
+    #             max_gain_ratio = gain_ratio
+    #             max_splitting_val = threshold
+    if(thresholds != {}):
+        threshold,gain_ratio = max(thresholds.iteritems(), key=operator.itemgetter(1))
     return gain_ratio,threshold
 # ======== Test case =============================
 # data_set,attr,step = [[0,0.05], [1,0.17], [1,0.64], [0,0.38], [0,0.19], [1,0.68], [1,0.69], [1,0.17], [1,0.4], [0,0.53]], 1, 2
