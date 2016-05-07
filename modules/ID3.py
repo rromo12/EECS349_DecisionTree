@@ -3,7 +3,12 @@ from node import Node
 from collections import defaultdict
 import sys
 import operator
-
+# Class node attributes:
+# ----------------------------
+# children - a list of 2 nodes if numeric, and a dictionary (key=attribute value, value=node) if nominal.  
+#            For numeric, the 0 index holds examples < the splitting_value, the 
+#            index holds examples >= the splitting value
+#
 def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     '''
     See Textbook for algorithm.
@@ -16,26 +21,56 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     Output: The node representing the decision tree learned over the given data set
     ========================================================================================================
     '''
-    if(len(data_set) == 0):
-        #if examples empty return default
-        pass
-    elif:
-        #all examples have same classification return that classification
-        pass
-    elif:
+    leaf = Node()
+    if(len(data_set) == 0 or depth == 0 or check_homogenous(data_set) != None):
+        #if examples empty return default default(mode)
+        #or if all examples have same classification return that classification
+        #or if depth has reached its limit
+        leaf.label = mode(data_set)
+        leaf.decision_attribute = None
+        leaf.is_nominal = None
+        leaf.value = None
+        leaf.splitting_value = None
+        leaf.name = None
+        return leaf
+    elif(len(attribute_metadata) == 0):
         # attributes is empty return mode
-        pass
+            leaf.label = mode(data_set)
+            leaf.decision_attribute = None
+            leaf.is_nominal = None
+            leaf.value = None
+            leaf.splitting_value = None
+            leaf.name = None
+            return leaf
     else:
         best_attribute,splitting_value = pick_best_attribute(data_set,attribute_metadata,numerical_splits_count)
+        #tree<- a new decision tree with root best
+        leaf.label = None
+        leaf.decision_attribute = best_attribute
+        leaf.name = attribute_metadata[best_attribute]['name']
         attribute_metadata.pop(best_attribute)#remove best attribute
         numerical_splits_count[best_attribute] -= 1 #lower numerical splits by 1 
-        #tree<- a new decision tree with root best
         #for each value of best 
-        if(splitting_value == false): #case of nominal attribute
+        if(splitting_value == False): #case of nominal attribute
+            leaf.is_nominal = True
             examples = split_on_nominal(data_set,best_attribute)
+            leaf.splitting_value = splitting_value
+            # dictionary (key=attribute value, value=node)
+            dictionary = {}
+            for value, data in examples.iteritems():
+                dictionary[value]= ID3(data,attribute_metadata,numerical_splits_count,depth-1)
+            leaf.children = dictionary
+            return leaf
             # recursive call to ID3
         else: #case of numeric
             examples = split_on_numerical(data_set,best_attribute,splitting_value)
+            leaf.is_nominal = False
+            leaf.splitting_value=splitting_value
+            leaf.children = [
+            ID3(examples[0],attribute_metadata,numerical_splits_count,depth-1),
+            ID3(examples[1],attribute_metadata,numerical_splits_count,depth-1)
+            ]
+            return leaf
             # recursive call to ID3
 def check_homogenous(data_set):
     '''
@@ -303,20 +338,4 @@ def split_on_numerical(data_set, attribute, splitting_value):
 # d_set,a,sval = [[0, 0.91], [0, 0.84], [1, 0.82], [1, 0.07], [0, 0.82],[0, 0.59], [0, 0.87], [0, 0.17], [1, 0.05], [1, 0.76]],1,0.17
 # split_on_numerical(d_set,a,sval) == ([[1, 0.07], [1, 0.05]],[[0, 0.91],[0, 0.84], [1, 0.82], [0, 0.82], [0, 0.59], [0, 0.87], [0, 0.17], [1, 0.76]])
 
-##failing on
 
-attribute_metadata = [{'name': "winner",'is_nominal': True},{'name': "weather",'is_nominal': True}, {'name': "attitude", 'is_nominal': False}] 
-data_set = [[0, 0, 0.1], [1, 0, 0.2], [0, 2, 0.2], [0, 2, 0.2], [0, 3, 0.1], [1, 1, 0.1], [0, 4, 0.1], [0, 2, 0.1], [1, 2, 0.1], [1, 5, 0.1]]
-print 'pick_best_attribute'
-print pick_best_attribute(data_set,attribute_metadata,[20,20,20,20])
-print 'gain ratios nominal'
-print 'index 0:'
-print gain_ratio_nominal(data_set,0)
-print 'index 1:'
-print gain_ratio_nominal(data_set,1)
-print 'gain_ratios numeric'
-print 'index:2'
-print gain_ratio_numeric(data_set,2,1)
-
-# returns (2,0.2)
-# should be (1,False)

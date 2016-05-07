@@ -39,7 +39,7 @@ class Node:
             if(self.is_nominal):
                 return self.children[instance[self.decision_attribute]].classify(instance)
             else:
-                if(instance[self.decision_attribute] < self.splitting):
+                if(instance[self.decision_attribute] < self.splitting_value):
                     return self.children[0].classify(instance)
                 else:
                     return self.children[1].classify(instance)
