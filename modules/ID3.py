@@ -72,17 +72,17 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
 
         else: #if nominal and numerical splits > 0, use nominal gain calculation
             if(numerical_splits_count[index]>0): 
-                if(max_gain< gain_ratio_numeric(data_set,index,steps)):
+                if(max_gain< gain_ratio_numeric(data_set,index,steps)[0]):
                     #if higher than max gain then this is our best attribute and should be our new max gain,index and splitting value
                     max_gain,splitting_value = gain_ratio_numeric(data_set,index,steps)
                     max_index = index
 
     
     if(max_gain==0): #if max gain is 0 then all attributes gain was 0, return false, false 
-         index = False
+         max_index = False
          splitting_value = False
 
-    return (index,splitting_value)
+    return (max_index,splitting_value)
 # # ======== Test Cases =============================
 # numerical_splits_count = [20,20]
 # attribute_metadata = [{'name': "winner",'is_nominal': True},{'name': "opprundifferential",'is_nominal': False}]
