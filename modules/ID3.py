@@ -16,10 +16,27 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     Output: The node representing the decision tree learned over the given data set
     ========================================================================================================
     '''
-
-    
-    pass
-
+    if(len(data_set) == 0):
+        #if examples empty return default
+        pass
+    elif:
+        #all examples have same classification return that classification
+        pass
+    elif:
+        # attributes is empty return mode
+        pass
+    else:
+        best_attribute,splitting_value = pick_best_attribute(data_set,attribute_metadata,numerical_splits_count)
+        attribute_metadata.pop(best_attribute)#remove best attribute
+        numerical_splits_count[best_attribute] -= 1 #lower numerical splits by 1 
+        #tree<- a new decision tree with root best
+        #for each value of best 
+        if(splitting_value == false): #case of nominal attribute
+            examples = split_on_nominal(data_set,best_attribute)
+            # recursive call to ID3
+        else: #case of numeric
+            examples = split_on_numerical(data_set,best_attribute,splitting_value)
+            # recursive call to ID3
 def check_homogenous(data_set):
     '''
     ========================================================================================================
