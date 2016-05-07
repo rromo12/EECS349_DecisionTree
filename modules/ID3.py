@@ -3,6 +3,56 @@ from node import Node
 from collections import defaultdict
 import sys
 import operator
+def fix_missing_attributes(data_set,attribute_metadata):
+    '''
+    Fix Missing attributes with mode for nominal attributes and average for numerical attributes
+    ===========================================================================================================
+    Input:data_set and attribute_metadata
+    ===========================================================================================================
+    Output: the fixed data set without missing attributes
+    '''
+    defaults = []
+    for attribute in range(len(attribute_metadata)):
+        if(attribute_metadata[attribute]['is_nominal']):
+            defaults.append(attribute_mode(data_set,attribute))
+        else:
+            defaults.append(attribute_average(data_set,attribute))
+    for data in range(len(data_set)):
+        for attribute in range(len(attribute_metadata)):
+            if(data_set[data][attribute] == None):
+                data_set[data][attribute] = defaults[attribute]
+    return data_set
+
+def attribute_mode(data_set,attribute):
+    '''
+    Calculate Mode of a Nominal attribute
+    ===========================================================================================================
+    Input:data_set and nominal attribute index
+    ===========================================================================================================
+    Output: Mode of this attribute
+    '''
+    dictionary = {}
+    for data in data_set:
+        if data[attribute] in dictionary.keys():
+            dictionary[data[attribute]] += 1
+        else:
+            dictionary[data[attribute]] = 1
+    return max(dictionary.iteritems(), key=operator.itemgetter(1))[0]
+
+def attribute_average(data_set,attribute):
+    '''
+    Calculate average value for a numerical attribute
+    ===========================================================================================================
+    Input:data_set and attribute index
+    ===========================================================================================================
+    Output: Average value for this attribute
+    '''
+    total = 0
+    for data in data_set:
+        total +=data[attribute]
+    average = float(total)/len(data_set)
+    return average    
+
 
 def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     '''
@@ -15,12 +65,14 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     ========================================================================================================
     Output: The node representing the decision tree learned over the given data set
     ========================================================================================================
-    '''
+    # '''
+    data_set= fix_missing_attributes(data_set,attribute_metadata)
+
     leaf = Node()
     threshold =0.1
     if(len(data_set) == 0 or depth == 0 or check_homogenous(data_set) != None or entropy(data_set)<threshold or len(attribute_metadata) == 0):
         #if examples empty return default default(mode)
-        #or if all examples have same classification return that classification
+        #or if all examples have same classification return that classification (mode of the dataset is the same as the homogenous classification)
         #or if depth has reached its limit
         # attributes is empty return mode
         leaf.label = mode(data_set)
