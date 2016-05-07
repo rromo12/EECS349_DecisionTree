@@ -21,7 +21,7 @@ def fix_missing_attributes(data_set,attribute_metadata):
 
     for data in range(len(data_set)):
         for attribute in range(len(attribute_metadata)):
-            if(data_set[data][attribute] == None):
+            if(data_set[data][attribute] == '?'):
                 data_set[data][attribute] = defaults[attribute]
     return data_set
 
@@ -168,7 +168,6 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     Output: best attribute, split value if numeric
     ========================================================================================================
     '''
-    steps = 1 #pdf says to default to 1 for test cases
     max_gain = 0
     max_index = 0
     splitting_value = 0
