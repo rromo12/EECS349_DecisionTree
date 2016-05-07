@@ -3,6 +3,7 @@ from node import Node
 from collections import defaultdict
 import sys
 import operator
+
 def fix_missing_attributes(data_set,attribute_metadata):
     '''
     Fix Missing attributes with mode for nominal attributes and average for numerical attributes
@@ -17,6 +18,7 @@ def fix_missing_attributes(data_set,attribute_metadata):
             defaults.append(attribute_mode(data_set,attribute))
         else:
             defaults.append(attribute_average(data_set,attribute))
+
     for data in range(len(data_set)):
         for attribute in range(len(attribute_metadata)):
             if(data_set[data][attribute] == None):
@@ -33,10 +35,11 @@ def attribute_mode(data_set,attribute):
     '''
     dictionary = {}
     for data in data_set:
-        if data[attribute] in dictionary.keys():
-            dictionary[data[attribute]] += 1
-        else:
-            dictionary[data[attribute]] = 1
+        if data[attribute] != None:
+            if data[attribute] in dictionary.keys():
+                dictionary[data[attribute]] += 1
+            else:
+                dictionary[data[attribute]] = 1
     return max(dictionary.iteritems(), key=operator.itemgetter(1))[0]
 
 def attribute_average(data_set,attribute):
@@ -49,12 +52,20 @@ def attribute_average(data_set,attribute):
     '''
     total = 0
     for data in data_set:
-        total +=data[attribute]
+        if(data[attribute] != None):
+            total +=data[attribute]
     average = float(total)/len(data_set)
     return average    
 
-
 def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
+    '''
+    Actually calls the function to generate ID3 tree
+    had to make it this way to avoid the recursive calls trying to fix missing attributes
+    '''
+    data_set= fix_missing_attributes(data_set,attribute_metadata)
+    return ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth)
+
+def ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth):
     '''
     See Textbook for algorithm.
     Make sure to handle unknown values, some suggested approaches were
@@ -66,7 +77,6 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     Output: The node representing the decision tree learned over the given data set
     ========================================================================================================
     # '''
-    data_set= fix_missing_attributes(data_set,attribute_metadata)
 
     leaf = Node()
     threshold =0.1
@@ -106,7 +116,7 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
             # dictionary (key=attribute value, value=node)
             dictionary = {}
             for value, data in examples.iteritems():
-                dictionary[value]= ID3(data,attribute_metadata,numerical_splits_count,depth-1)
+                dictionary[value]= ID3_helper(data,attribute_metadata,numerical_splits_count,depth-1)
             leaf.children = dictionary
             return leaf
             # recursive call to ID3
@@ -116,8 +126,8 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
             leaf.splitting_value=splitting_value
             #list of 2 nodes
             leaf.children = [
-            ID3(examples[0],attribute_metadata,numerical_splits_count,depth-1),
-            ID3(examples[1],attribute_metadata,numerical_splits_count,depth-1)
+            ID3_helper(examples[0],attribute_metadata,numerical_splits_count,depth-1),
+            ID3_helper(examples[1],attribute_metadata,numerical_splits_count,depth-1)
             ]
             return leaf
     return leaf
