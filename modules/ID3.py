@@ -3,12 +3,7 @@ from node import Node
 from collections import defaultdict
 import sys
 import operator
-# Class node attributes:
-# ----------------------------
-# children - a list of 2 nodes if numeric, and a dictionary (key=attribute value, value=node) if nominal.  
-#            For numeric, the 0 index holds examples < the splitting_value, the 
-#            index holds examples >= the splitting value
-#
+
 def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     '''
     See Textbook for algorithm.
@@ -22,10 +17,12 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     ========================================================================================================
     '''
     leaf = Node()
-    if(len(data_set) == 0 or depth == 0 or check_homogenous(data_set) != None):
+    threshold =0.1
+    if(len(data_set) == 0 or depth == 0 or check_homogenous(data_set) != None or entropy(data_set)<threshold or len(attribute_metadata) == 0):
         #if examples empty return default default(mode)
         #or if all examples have same classification return that classification
         #or if depth has reached its limit
+        # attributes is empty return mode
         leaf.label = mode(data_set)
         leaf.decision_attribute = None
         leaf.is_nominal = None
@@ -33,24 +30,16 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
         leaf.splitting_value = None
         leaf.name = None
         return leaf
-    elif(len(attribute_metadata) == 0):
-        # attributes is empty return mode
-            leaf.label = mode(data_set)
-            leaf.decision_attribute = None
-            leaf.is_nominal = None
-            leaf.value = None
-            leaf.splitting_value = None
-            leaf.name = None
-            return leaf
     else:
         best_attribute,splitting_value = pick_best_attribute(data_set,attribute_metadata,numerical_splits_count)
         #tree<- a new decision tree with root best
         leaf.label = None
         leaf.decision_attribute = best_attribute
         leaf.name = attribute_metadata[best_attribute]['name']
-        attribute_metadata.pop(best_attribute)      #remove best attribute
-        numerical_splits_count[best_attribute] -= 1 #lower numerical splits by 1 
-        #for each value of best 
+        attribute_metadata.pop(best_attribute)      #remove best attribute from list of attributes
+        numerical_splits_count[best_attribute] -= 1 #lower numerical splits of this attribute by 1 
+
+        #case of zero information gain on all possible splitting attributes
         if(best_attribute == False):
             leaf.label = mode(data_set)
             leaf.decision_attribute= None
@@ -73,11 +62,13 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
             examples = split_on_numerical(data_set,best_attribute,splitting_value)
             leaf.is_nominal = False
             leaf.splitting_value=splitting_value
+            #list of 2 nodes
             leaf.children = [
             ID3(examples[0],attribute_metadata,numerical_splits_count,depth-1),
             ID3(examples[1],attribute_metadata,numerical_splits_count,depth-1)
             ]
             return leaf
+    return leaf
             # recursive call to ID3
 def check_homogenous(data_set):
     '''
