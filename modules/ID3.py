@@ -48,10 +48,17 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
         leaf.label = None
         leaf.decision_attribute = best_attribute
         leaf.name = attribute_metadata[best_attribute]['name']
-        attribute_metadata.pop(best_attribute)#remove best attribute
+        attribute_metadata.pop(best_attribute)      #remove best attribute
         numerical_splits_count[best_attribute] -= 1 #lower numerical splits by 1 
         #for each value of best 
-        if(splitting_value == False): #case of nominal attribute
+        if(best_attribute == False):
+            leaf.label = mode(data_set)
+            leaf.decision_attribute= None
+            leaf.name = None
+            leaf.splitting_value = None
+            leaf.value = None
+            return leaf
+        elif(splitting_value == False): #case of nominal attribute
             leaf.is_nominal = True
             examples = split_on_nominal(data_set,best_attribute)
             leaf.splitting_value = splitting_value
