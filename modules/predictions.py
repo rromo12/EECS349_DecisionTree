@@ -18,12 +18,18 @@ def create_predictions(tree, predict):
     using the classify method in node class.
     '''
     with open(predict, 'rb') as f:
-        reader = csv.reader(f)
+        reader = csv.reader(f,csv.QUOTE_NONE)
+        labels = reader.next()
         predict = list(reader)
-    # download data set
     results = []
-    for instance in predict:
-        results.append(tree.classify(instance))
     with open('results.csv', 'wb') as resultsfile:
         wr = csv.writer(resultsfile, quoting=csv.QUOTE_ALL)
-        wr.writerow(results)
+        for instance in predict:
+            instance.insert(0, instance.pop())
+
+            for i in range(len(instance)):
+                try:
+                    instance[i]=float(instance[i])
+                except ValueError:
+                    pass   
+            wr.writerow([tree.classify(instance)])

@@ -37,7 +37,11 @@ class Node:
         '''
         if self.label == None:
             if(self.is_nominal):
-                return self.children[instance[self.decision_attribute]].classify(instance)
+                value = instance[self.decision_attribute]
+                if(value not in self.children.keys()):
+                    value = self.children.keys()[0]
+                    
+                return self.children[value].classify(instance)
             else:
                 if(instance[self.decision_attribute] < self.splitting_value):
                     return self.children[0].classify(instance)
