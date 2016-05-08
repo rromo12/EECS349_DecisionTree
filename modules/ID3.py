@@ -21,7 +21,7 @@ def fix_missing_attributes(data_set,attribute_metadata):
 
     for data in range(len(data_set)):
         for attribute in range(len(attribute_metadata)):
-            if(data_set[data][attribute] == '?'):
+            if(data_set[data][attribute] == None):
                 data_set[data][attribute] = defaults[attribute]
     return data_set
 
@@ -88,7 +88,7 @@ def ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth):
         leaf.label = mode(data_set)
         leaf.decision_attribute = None
         leaf.is_nominal = None
-        leaf.value = None
+        leaf.value = mode(data_set)
         leaf.splitting_value = None
         leaf.name = None
         return leaf
@@ -168,6 +168,7 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     Output: best attribute, split value if numeric
     ========================================================================================================
     '''
+    steps = 1 #pdf says to default to 1 for test cases
     max_gain = 0
     max_index = 0
     splitting_value = 0
