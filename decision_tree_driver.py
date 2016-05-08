@@ -20,8 +20,10 @@ options = {
     'print_dnf' : False,
     'prune' : 'data/test_bvalidate.csv',
     'learning_curve' : {
-        'upper_bound' : 0.05,
-        'increment' : 0.001
+        # 'upper_bound' : 0.05,
+        # 'increment' : 0.001
+        'upper_bound' : 0.95,
+        'increment' : 0.05
     }
 }
 
