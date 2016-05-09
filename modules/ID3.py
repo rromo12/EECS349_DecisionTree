@@ -64,6 +64,7 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     '''
     data_set= fix_missing_attributes(data_set,attribute_metadata)
     # print 'shuffle'
+    # shuffle(data_set)
     # print 'done'
     return ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth)
 
