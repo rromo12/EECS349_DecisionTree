@@ -20,6 +20,7 @@ def get_graph_accuracy_partial(train_set, attribute_metadata, validate_set, nume
     '''
     depth = 20
     num_training_samples = int(math.floor(pct*len(train_set)))+1 #number of training samples to use 
+    random.shuffle(train_set)
     data_subset = random.sample(train_set,num_training_samples)
     tree = ID3(data_subset, attribute_metadata, numerical_splits_count, depth)
     return validation_accuracy(tree,validate_set)
@@ -43,14 +44,11 @@ def get_graph(train_set, attribute_metadata, validate_set, numerical_splits_coun
     '''
     numb = int((upper-lower)/increment)
     x=linspace(lower,upper,numb)
-    print x
     y=[]
     for i in x:
         print i
         y.append(get_graph_data(train_set,attribute_metadata,validate_set,numerical_splits_count,iterations,i))
     plt.figure(0) 
-    print x, y
-    print len(x),len(y)
     plt.plot(x,y)
     plt.show()
     return plt.plot(x, y)

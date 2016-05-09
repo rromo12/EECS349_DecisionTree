@@ -3,7 +3,7 @@ from node import Node
 from collections import defaultdict
 import sys
 import operator
-
+from random import shuffle
 def fix_missing_attributes(data_set,attribute_metadata):
     '''
     Fix Missing attributes with mode for nominal attributes and average for numerical attributes
@@ -63,6 +63,8 @@ def ID3(data_set, attribute_metadata, numerical_splits_count, depth):
     had to make it this way to avoid the recursive calls trying to fix missing attributes
     '''
     data_set= fix_missing_attributes(data_set,attribute_metadata)
+    # print 'shuffle'
+    # print 'done'
     return ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth)
 
 def ID3_helper(data_set, attribute_metadata, numerical_splits_count, depth):
@@ -168,7 +170,16 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     Output: best attribute, split value if numeric
     ========================================================================================================
     '''
-    steps = 1 #pdf says to default to 1 for test cases
+    if(len(data_set)<10):
+        steps = 1 #pdf says to default to 1 for test cases
+    elif(len(data_set)>=10 and len(data_set) < 100):
+        steps = len(data_set)/10
+    elif(len(data_set)>=100 and len(data_set)<1000):
+        steps = len(data_set)/10
+    elif(len(data_set)>1000 and len(data_set)<10000):
+        steps = len(data_set)/50
+    else:
+        steps = len(data_set)/100
     max_gain = 0
     max_index = 0
     splitting_value = 0
