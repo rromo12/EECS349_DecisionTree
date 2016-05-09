@@ -11,19 +11,19 @@ from modules.predictions import *
 #   options can be found in README.md
 
 options = {
-    'train' : 'data/test_btrain.csv',
-    'validate': 'data/test_bvalidate.csv',
-    'predict': 'data/test_btest.csv',
-    'limit_splits_on_numerical': 5,
-    'limit_depth': 20,
+    'train' : 'data/btrain.csv',
+    'validate': 'data/bvalidate.csv',
+    'predict': 'data/btest.csv',
+    'limit_splits_on_numerical': 15,
+    'limit_depth': 5,
     'print_tree': False,
     'print_dnf' : False,
-    'prune' : 'data/test_bvalidate.csv',
+    'prune' : 'data/bvalidate.csv',
     'learning_curve' : {
-        # 'upper_bound' : 0.05,
-        # 'increment' : 0.001
-        'upper_bound' : 0.95,
+        'upper_bound' : 0.99,
         'increment' : 0.05
+        # 'upper_bound' : 0.95,
+        # 'increment' : 0.05
     }
 }
 

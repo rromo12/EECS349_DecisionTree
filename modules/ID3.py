@@ -178,9 +178,9 @@ def pick_best_attribute(data_set, attribute_metadata, numerical_splits_count):
     elif(len(data_set)>=100 and len(data_set)<1000):
         steps = len(data_set)/10
     elif(len(data_set)>1000 and len(data_set)<10000):
-        steps = len(data_set)/50
+        steps = len(data_set)/10
     else:
-        steps = len(data_set)/100
+        steps = len(data_set)/10
     max_gain = 0
     max_index = 0
     splitting_value = 0

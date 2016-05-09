@@ -18,7 +18,7 @@ def get_graph_accuracy_partial(train_set, attribute_metadata, validate_set, nume
     get_graph_accuracy_partial - Given a training set, attribute metadata, validation set, numerical splits count, and percentage,
     this function will return the validation accuracy of a specified (percentage) portion of the trainging setself.
     '''
-    depth = 20
+    depth = 40
     num_training_samples = int(math.floor(pct*len(train_set)))+1 #number of training samples to use 
     random.shuffle(train_set)
     data_subset = random.sample(train_set,num_training_samples)
