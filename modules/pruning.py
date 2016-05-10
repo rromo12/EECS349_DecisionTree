@@ -12,10 +12,27 @@ def reduced_error_pruning(root,training_set,validation_set):
     You can implement this as you choose, but the goal is to remove some nodes such that doing so improves validation accuracy.
     NOTE you will probably not need to use the training set for your pruning strategy, but it's passed as an argument in the starter code just in case.
     '''
-    # Your code here
-    pass
-# 
 
+#     original_validation = validation_accuracy(root,validation_set))
+
+#     if(root.label != None): #leaf, can't be pruned 
+#         return root
+#     else:
+#         if root.is_nominal: #nominal splitting node  
+#                 subsets = split_on_nominal(validation_set, root.decision_attribute)
+
+
+#                 new_node = self.label = mode
+#                 if(new_validation > original_validation):
+#                     return new_node
+#         else: #root is numeric
+#                 new_validation =validation_accuracy(new_node,validation_set))
+#                 if(new_validation > original_validation):
+#                     return new_node
+
+#         return root
+# #
+    pass
 def validation_accuracy(tree,validation_set):
     '''
     takes a tree and a validation set and returns the accuracy of the set on the given tree
