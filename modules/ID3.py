@@ -306,6 +306,7 @@ def gain_ratio_nominal(data_set, attribute):
         intrinsic += temp * math.log(temp,2)
     if intrinsic == 0:
         intrinsic = 0.0000001
+    # intrinsic = 1
     return abs(float(gain)/intrinsic)
 
 # ======== Test case =============================
@@ -356,6 +357,7 @@ def gain_ratio_numeric(data_set, attribute, steps):
                 #store this possible threshold value and its gain ratio
                 if intrinsic == 0:
                     intrinsic = 0.0000001
+                # intrinsic=1
                 thresholds[data_set[index][attribute]]=abs(float(gain)/intrinsic)
               
 

@@ -17,7 +17,7 @@ options = {
     'limit_splits_on_numerical': 15,
     'limit_depth': 5,
     'print_tree': False,
-    'print_dnf' : False,
+    'print_dnf' : True,
     'prune' : 'data/bvalidate.csv',
     'learning_curve' : {
         'upper_bound' : 0.99,
@@ -90,9 +90,9 @@ def decision_tree_driver(train, validate = False, predict = False, prune = False
     # generate a learning curve using the validation set
     if learning_curve and validate:
         print '###\n#  Generating Learning Curve\n###'
-        iterations = 20 # number of times to test each size
+        iterations = 5 # number of times to test each size
         get_graph(train_set, attribute_metadata, validate_set, 
-            numerical_splits_count, depth, 5, 0, learning_curve['upper_bound'],
+            numerical_splits_count, depth, iterations, 0, learning_curve['upper_bound'],
             learning_curve['increment'])
         print ''
 
